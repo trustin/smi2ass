@@ -1,0 +1,4 @@
+# Build output
+/build
+/test_smis/*.ass
+__pycache__

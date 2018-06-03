@@ -1,0 +1,26 @@
+language: generic
+sudo: required
+dist: trusty
+os:
+  - linux
+  - osx
+cache:
+  directories:
+    - "$HOME/.cache/pip"
+    - "$HOME/Library/Caches/pip"
+    - "$HOME/Library/Caches/Homebrew"
+install:
+  - ./install.sh
+script:
+  - ./build.sh
+notifications:
+  email: false
+deploy:
+  provider: releases
+  api_key:
+    - secure: "yFKbvIDfZYNiK3ea5Kdm8mAMBKdrnDgNAQHQGprhqpziJ7lJOadCqgHh53Dn/eIoIJTqm29GIEj+YvTP623i3duiIHEOFrYxu6TOkaTT0clRNDe55NckGXlq4NUx1/AFu3THkLVbCxK8dHTqDoiBNSG3CLAbzCw9SV+59ND3NLZQ/U4lKzaKJP0E2yACFweT1vsiW1fJiuvYZi2gkhOwTi+WVM7Dgzu6ch2bIwGEMVdPD4X6OVUj44sQzh2Df9CFRfMEztFbnhlBfH9l3JDsMYLdfeXXVjw6KSdnID8rK/SlavFteYiEE9Ap17NCPf6lFufnqR2N3YckMdfWqTmEb1Uf23FdRMct9oSb4QlIopzFaZ1XTdyR/Yep8lj8e8YcsAZIPd3c51Nm5UAssDVwTHXFRp4rjrTYKApuLiSRG9Rqv1w3zu1ss7z1MUK+PCZD7ge2nfFAXfHpTb1TbM6eDHXX0rCSCSB7c+XwnMUjwN4ahzWbAk+xMpo/+MWQ/Pli4M3Kk1ILBTiKfmmnFv1xS8CDwCHwv2b9r4tsWwqUuCCksSosMZHWYdeE+TQVskFCpJ3NJtjOaJCISt/YVlXL17eEdGFQ3y1nu05sJbCu/UKAH1ulmgmoHA0AUW13w/4tTWkKgwwfBn3+mDP9uhKn/gTa2fYmeZ/+DNfYGJ5PsdU="
+  file_glob: true
+  file: "build/dist/smi2ass.*"
+  skip_cleanup: true
+  on:
+    tags: true
