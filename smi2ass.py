@@ -331,11 +331,11 @@ def smi2ass_internal (sln):
 
 
 def ms2timecode(ms):
-    hours = ms / 3600000
+    hours = int(ms / 3600000)
     ms -= hours * 3600000
-    minutes = ms / 60000
+    minutes = int(ms / 60000)
     ms -= minutes * 60000
-    seconds = ms / 1000
+    seconds = int(ms / 1000)
     ms -= seconds * 1000
     ms = round(ms/10)
     timecode = '%01d:%02d:%02d.%02d' % (hours, minutes, seconds, ms)
