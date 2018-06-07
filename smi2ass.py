@@ -368,6 +368,8 @@ def separate_by_lang(smi_lines):
         #get time code from start tag
         try:
             timeCode = int(re.sub(r'\..*$', '', subtitleLine['start']))
+            if timeCode < 0:
+                print('Negative time code: %s' % subtitleLine)
         except:
             print('Failed to extract time code: %s' % subtitleLine)
 
