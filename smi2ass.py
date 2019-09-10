@@ -20,10 +20,19 @@
 # Forked from: https://github.com/hojel/service.subtitles.gomtv/blob/3a7342961e140eaf8250659b0ac6158ce5e6bc5c/resources/lib
 
 import chardet, os, sys, re
-from html.parser import HTMLParser
 from collections import defaultdict
 from operator import itemgetter
 from bs4 import BeautifulSoup
+
+major = sys.version_info.major
+minor = sys.version_info.minor
+
+if major == 3 and minor == 7:
+    import html
+elif major == 3 and minor < 7:
+    from html.parser import HTMLParser
+else:
+    print ('version 3.x needed') 
 
 default_lang_code = 'kor'
 default_font_name = 'sans-serif'
@@ -255,7 +264,7 @@ def smi2ass(smi_sgml):
     return ass_dict
 
 def smi2ass_internal (sln):
-    parser = HTMLParser()
+    global minor
     ass_lines = []
     for line_idx, item in enumerate(sln):
         try: # bad cases : '<SYNC .','<SYNC Start=479501??>'
@@ -338,7 +347,11 @@ def smi2ass_internal (sln):
 
             contents = p_tags.text
             contents = re.sub(r'smi2ass_unicode\(([0-9]+)\)', r'&#\1;', contents)
-            contents = parser.unescape(contents)
+            if minor == 7:
+                contents = html.unescape(contents)
+            else:
+                parser = HTMLParser()
+                contents = parser.unescape(contents)
 
             if len(contents.strip()) != 0:
                 line = 'Dialogue: 0,%s,%s,Default,,0000,0000,0000,,%s\n' % (tcstart,tcend, contents)
@@ -382,7 +395,7 @@ def separate_by_lang(smi_lines):
         # seperate langs depending on p class (language tag)
         # put smiLine,  Line Index, and time code into list (ml is dictionary (key is language name from p tag) with lists)
         try:
-            multiLanguageDict[languageTag].append([subtitleLine,line_idx,timeCode])
+            multiLanguageDict[languageTag[0]].append([subtitleLine,line_idx,timeCode])
         except: # bad cases : '<SYNC Start=7630><P>'
             try: # if no p class name, add unknown as language tag and handle later
                 #languageTag = smi_lines[line_idx-1].find('p')['class']
