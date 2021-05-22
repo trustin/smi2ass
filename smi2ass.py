@@ -27,15 +27,14 @@ from bs4 import BeautifulSoup
 major = sys.version_info.major
 minor = sys.version_info.minor
 
-if major == 3 and minor == 7:
+if major == 3 and minor >= 7:
     import html
 elif major == 3 and minor < 7:
     from html.parser import HTMLParser
 else:
     print ('version 3.x needed') 
 
-default_lang_code = 'kor'
-default_font_name = 'sans-serif'
+default_font_name = 'Malgun Gothic'
 
 # lang class for multiple language subtitle
 langCode = {'KRCC':'kor','KOCC':'kor','KR':'kor','KO':'kor','KOREANSC':'kor','KRC':'kor',
@@ -47,11 +46,10 @@ script_info =\
 """[Script Info]
 ;This is an Advanced Sub Station Alpha v4+ script.
 ;Converted by smi2ass
+Title: 0
 ScriptType: v4.00+
 Collisions: Normal
-PlayResX: 384
-PlayResY: 288
-Timer: 100.0000
+PlayDepth: 0
 
 """
 
@@ -59,7 +57,7 @@ styles=\
 """
 [V4+ Styles]
 Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
-Style: Default,""" + default_font_name + """,22,&H00ffffff,&H0000ffff,&H00000000,&H80000000,0,0,0,0,100,100,0,0.00,1,1,1,2,20,20,20,1
+Style: Default,""" + default_font_name + """,16,&H00FFFFFF,&H0000FFFF,&H00000000,&H00000000,0,0,0,0,100,100,0,0,1,1,0,2,10,10,10,1
 
 """
 
@@ -336,10 +334,10 @@ def smi2ass_internal (sln):
                 if not col == None:
                     hexcolor = re.search('[0-9a-fA-F]{6}',color['color'].lower()) # bad cases : '23df34'
                     if hexcolor is not None:
-                        converted_color = '{\\c&H' + hexcolor.group(0)[::-1]+'&}' + color.text + '{\\c}'
+                        converted_color = '{\\c&H' + hexcolor.group(0)[::]+'&}' + color.text + '{\\c}'
                     else:
                         try:
-                            converted_color = '{\\c&H' + css3_names_to_hex[color['color'].lower()][::-1].replace('#','&}') + color.text + '{\\c}'
+                            converted_color = '{\\c&H' + css3_names_to_hex[color['color'].lower()][::].replace('#','&}') + color.text + '{\\c}'
                         except: # bad cases : 'skybule'
                             converted_color = color.text
                             print('Failed to convert a color name: %s' % color['color'].lower())
@@ -347,7 +345,7 @@ def smi2ass_internal (sln):
 
             contents = p_tags.text
             contents = re.sub(r'smi2ass_unicode\(([0-9]+)\)', r'&#\1;', contents)
-            if minor == 7:
+            if minor >= 7:
                 contents = html.unescape(contents)
             else:
                 parser = HTMLParser()
@@ -356,7 +354,6 @@ def smi2ass_internal (sln):
             if len(contents.strip()) != 0:
                 line = 'Dialogue: 0,%s,%s,Default,,0000,0000,0000,,%s\n' % (tcstart,tcend, contents)
                 ass_lines.append(line)
-
     return ass_lines
 
 
@@ -484,6 +481,8 @@ def separate_by_lang(smi_lines):
 
 
 for smi_path in sys.argv[1:]:
+    # Print what file is currently working on
+    print(smi_path)
     # Open as binary and detect the encoding.
     smi_file = open(smi_path, 'rb')
     smi_encoding = chardet.detect(smi_file.read())['encoding']
@@ -495,7 +494,7 @@ for smi_path in sys.argv[1:]:
     ass_dict = smi2ass(smi_sgml)
     for lang in ass_dict:
         if len(lang) == 0:
-            ass_path = smi_path[:smi_path.rfind('.')] + '.' + default_lang_code + '.ass'
+            ass_path = smi_path[:smi_path.rfind('.')] + '.ass'
         else:
             ass_path = smi_path[:smi_path.rfind('.')] + '.' + lang + '.ass'
 
