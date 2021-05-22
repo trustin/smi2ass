@@ -334,10 +334,11 @@ def smi2ass_internal (sln):
                 if not col == None:
                     hexcolor = re.search('[0-9a-fA-F]{6}',color['color'].lower()) # bad cases : '23df34'
                     if hexcolor is not None:
-                        converted_color = '{\\c&H' + hexcolor.group(0)[::]+'&}' + color.text + '{\\c}'
+                        converted_color = '{\\c&H' + rgb2bgr(hexcolor.group(0)[::]) +'&}' + color.text + '{\\c}'
                     else:
                         try:
-                            converted_color = '{\\c&H' + css3_names_to_hex[color['color'].lower()][::].replace('#','&}') + color.text + '{\\c}'
+                            hexConvert = rgb2bgr(css3_names_to_hex[color['color'].lower()][::].replace('#',''))
+                            converted_color = '{\\c&H' + hexConvert + '&}' + color.text + '{\\c}'
                         except: # bad cases : 'skybule'
                             converted_color = color.text
                             print('Failed to convert a color name: %s' % color['color'].lower())
@@ -356,7 +357,6 @@ def smi2ass_internal (sln):
                 ass_lines.append(line)
     return ass_lines
 
-
 def ms2timecode(ms):
     hours = int(ms / 3600000)
     ms -= hours * 3600000
@@ -367,7 +367,6 @@ def ms2timecode(ms):
     ms = round(ms/10)
     timecode = '%01d:%02d:%02d.%02d' % (hours, minutes, seconds, ms)
     return timecode
-
 
 def separate_by_lang(smi_lines):
     #prepare multilanguage dict with languages separated list
@@ -479,6 +478,8 @@ def separate_by_lang(smi_lines):
             longlang.append('')
     return multiLanguageDictSorted, longlang
 
+def rgb2bgr(rgb):
+    return rgb[4:6] + rgb[2:4] + rgb[0:2]
 
 for smi_path in sys.argv[1:]:
     # Print what file is currently working on
