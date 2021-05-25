@@ -2,3 +2,4 @@
 /build
 /test_smis/*.ass
 __pycache__
+.vscode

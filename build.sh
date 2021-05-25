@@ -7,9 +7,9 @@ fi
 
 # Install the core packages.
 pip install \
-  'PyInstaller==3.3.1' \
-  'beautifulsoup4==4.6.0' \
-  'chardet==3.0.4'
+  'PyInstaller===4.3' \
+  'beautifulsoup4===4.9.3' \
+  'chardet===4.0.0'
 
 # Build the binary.
 python -OO -m PyInstaller \
@@ -41,3 +41,4 @@ echo "sha256sum: $(cat "$SMI2ASS_BIN.sha256") ($SMI2ASS_BIN.sha256)"
 
 # Build a test site with the binary to make sure it really works.
 "build/dist/smi2ass.$OS_CLASSIFIER" 'test_smis/Psycho-Pass - S01E15.smi'
+"build/dist/smi2ass.$OS_CLASSIFIER" 'test_smis/Bakemonogatari - 01.smi'
