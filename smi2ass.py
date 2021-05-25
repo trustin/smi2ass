@@ -50,6 +50,9 @@ Title: 0
 ScriptType: v4.00+
 Collisions: Normal
 PlayDepth: 0
+PlayResX: 1920
+PlayResY: 1080
+Timer: 100.0000
 
 """
 
@@ -479,6 +482,8 @@ def separate_by_lang(smi_lines):
     return multiLanguageDictSorted, longlang
 
 def rgb2bgr(rgb):
+    # Converting RGB based color code to BGR color code.
+    # Based on the ASS documentation, ASS useses BGR
     return rgb[4:6] + rgb[2:4] + rgb[0:2]
 
 for smi_path in sys.argv[1:]:
